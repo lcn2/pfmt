@@ -28,7 +28,7 @@
 
 # setup
 #
-export VERSION="1.0 2023-03-23"
+export VERSION="1.0.1 2023-03-23"
 NAME=$(basename "$0"); export NAME
 #
 export V_FLAG=0
@@ -219,7 +219,7 @@ fi
 	'NR == 1 {line = $0;}
 	 NR == 2 {print first line end; line=$0;}
 	 NR > 2 {print istr line end; line=$0;}
-	 END {if (NR == 1) { print line; } else { print istr line; }}'
+	 END {if (NR == 1) { print first line; } else { print istr line; }}'
 export EXIT_CODE="${PIPESTATUS[0]}"
 
 # exit according to fmt exit code
