@@ -51,6 +51,7 @@ all: ${TARGETS}
 
 pfmt: pfmt.sh
 	@${CP} -fv pfmt.sh $@
+	${CHMOD} +x $@
 
 configure:
 	@echo nothing to configure
