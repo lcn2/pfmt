@@ -50,7 +50,7 @@ all: ${TARGETS}
 .PHONY: all configure clean clobber install
 
 pfmt: pfmt.sh
-	@${CP} -fv pfmt.sh $@
+	@${CP} -fv $< $@
 	${CHMOD} +x $@
 
 configure:
