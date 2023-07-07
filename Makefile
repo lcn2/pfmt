@@ -34,28 +34,32 @@ RM= rm
 CP= cp
 CHMOD= chmod
 INSTALL= install
+TRUE= true
+SH_FILES= pfmt.sh
 
 DESTDIR= /usr/local/bin
+
 
 TARGETS= pfmt
 
 all: ${TARGETS}
+	@:
 
 # rules, not file targets
 #
 .PHONY: all configure clean clobber install
 
-pfmt:
-	@true
+pfmt: pfmt.sh
+	@${CP} -fv pfmt.sh $@
 
 configure:
 	@echo nothing to configure
 
 clean:
-	@echo rule to clean or empty rule if nothing is built
+	${RM} -f ${TARGETS}
 
 clobber: clean
-	@echo rule to clobber or empty rule if nothing is built
+	@${TRUE}
 
 install: all
 	${INSTALL} -m 0555 ${TARGETS} ${DESTDIR}
