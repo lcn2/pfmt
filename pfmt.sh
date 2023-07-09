@@ -28,11 +28,12 @@
 
 # setup
 #
-export VERSION="1.0.1 2023-03-23"
+export VERSION="1.0.2 2023-07-09"
 NAME=$(basename "$0"); export NAME
 #
 export V_FLAG=0
 export FMT="fmt"
+export AWK="awk"
 export C_FLAG=
 export M_FLAG=
 export N_FLAG=
@@ -49,7 +50,7 @@ export ISTR="	"
 #
 export USAGE="usage: $0 [-h] [-v level] [-V]
 	[-f path]  [-1 first] [-e endstr] [-i istr]
-	[-c] [-m] [-n] [-p] [-d chars] [-l num] [-t num] [-w width]
+	[-c] [-m] [-n] [-p] [-d chars] [-l num] [-t num] [-w width] [-a awk]
 	[file ...]
 
 	-h		print help message and exit
@@ -79,6 +80,12 @@ export USAGE="usage: $0 [-h] [-v level] [-V]
 			    use: fmt -l num ...
 	-w width	have fmt limit lines to length width (def: 72)
 
+	-a awk		set path to awk (def: use \$PATH)
+
+	file		file to read from (def: stdin)
+			    NOTE: you can specify more than one file but if you
+			    do it will not read from stdin ('-' not accepted)
+
 Exit codes:
      0	    all OK
      2	    -h and help string printed or -V and version string printed
@@ -89,7 +96,7 @@ $NAME version: $VERSION"
 
 # parse command line
 #
-while getopts :hv:Vf:1:e:i:cmnpd:l:t:w: flag; do
+while getopts :hv:Vf:1:e:i:cmnpd:l:t:w:a: flag; do
   case "$flag" in
     h) echo "$USAGE"
 	exit 2
@@ -122,6 +129,8 @@ while getopts :hv:Vf:1:e:i:cmnpd:l:t:w: flag; do
     t) T_FLAG="$OPTARG"
 	;;
     w) W_FLAG="$OPTARG"
+	;;
+    a) AWK="$OPTARG"
 	;;
     \?) echo "$0: invalid option: -$OPTARG" 1>&2
 	echo 1>&2
@@ -215,7 +224,7 @@ fi
 # run fmt
 #
 "$FMT" "${F_OPTION[@]}" "$@" |
-    awk -v first="$FIRST" -v end="$END" -v istr="$ISTR" \
+    "$AWK" -v first="$FIRST" -v end="$END" -v istr="$ISTR" \
 	'NR == 1 {line = $0;}
 	 NR == 2 {print first line end; line=$0;}
 	 NR > 2 {print istr line end; line=$0;}
