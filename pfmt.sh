@@ -282,6 +282,12 @@ fi
 
 # run fmt
 #
+# SC2016 (info): Expressions don't expand in single quotes, use double quotes for that.
+#
+# disable shellcheck check SC2016 because it's incorrect for awk: we have to
+# use single quotes.
+#
+# shellcheck disable=SC2016
 "$FMT" "${F_OPTION[@]}" "$@" |
     "$AWK" -v first="$FIRST" -v end="$END" -v istr="$ISTR" \
 	'NR == 1 {line = $0;}
