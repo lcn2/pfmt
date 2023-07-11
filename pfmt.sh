@@ -298,7 +298,7 @@ export EXIT_CODE="${PIPESTATUS[0]}"
 
 # exit according to fmt exit code
 #
-if [[  $V_FLAG -ge 1 && $EXIT_CODE -ne 1 ]]; then
-    echo "$0: debug[1]: fmt ext code: $EXIT_CODE" 1>&2
+if [[  $V_FLAG -ge 1 && $EXIT_CODE -ne 0 ]]; then
+    echo "$0: debug[1]: fmt exit code: $EXIT_CODE" 1>&2
 fi
 exit "$EXIT_CODE"
