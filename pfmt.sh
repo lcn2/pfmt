@@ -28,12 +28,14 @@
 
 # setup
 #
-export VERSION="1.0.2 2023-07-09"
+export VERSION="1.0.3 2023-07-11"
 NAME=$(basename "$0"); export NAME
 #
 export V_FLAG=0
 export FMT="fmt"
+export F_FLAG=""
 export AWK="awk"
+export A_FLAG=""
 export C_FLAG=
 export M_FLAG=
 export N_FLAG=
@@ -57,7 +59,7 @@ export USAGE="usage: $0 [-h] [-v level] [-V]
 	-v level	set verbosity level (def level: $V_FLAG)
 	-V		print version string and exit
 
-	-f path		path to the fmt command (def: $FMT)
+	-f path		path to the fmt command (def: use \$PATH)
 
 	-1 first	indent 1st line with 1str (def: within <>: <$FIRST>)
 	-e endstr	output entstr at end of line before final line (def within <>: <$END>)
@@ -90,6 +92,8 @@ Exit codes:
      0	    all OK
      2	    -h and help string printed or -V and version string printed
      3	    command line error
+     5	    fmt is not a regular executable file
+     4	    awk is not a regular executable file
  >= 10	    internal error
 
 $NAME version: $VERSION"
@@ -107,6 +111,7 @@ while getopts :hv:Vf:1:e:i:cmnpd:l:t:w:a: flag; do
 	exit 2
 	;;
     f) FMT="$OPTARG"
+       F_FLAG="true"
 	;;
     1) FIRST="$OPTARG"
 	;;
@@ -131,6 +136,7 @@ while getopts :hv:Vf:1:e:i:cmnpd:l:t:w:a: flag; do
     w) W_FLAG="$OPTARG"
 	;;
     a) AWK="$OPTARG"
+       A_FLAG="true"
 	;;
     \?) echo "$0: invalid option: -$OPTARG" 1>&2
 	echo 1>&2
@@ -153,6 +159,59 @@ done
 # remove the options
 #
 shift $(( OPTIND - 1 ));
+
+# firewall checks
+#
+# we have to make sure the tools that we need exists and are executable
+#
+# now check that fmt is a regular executable file
+#
+# check that fmt exists
+
+# we have to reconstruct the path to fmt in case -f was not used
+if [[ -z "$F_FLAG" ]]; then
+    FMT="$(type -P "$FMT")"
+fi
+# now that we have a possible new path, check that fmt exists
+if [[ ! -e "$FMT" ]]; then
+    echo "$0: fmt does not exist: $FMT" 1>&2
+    exit 4
+fi
+# check that fmt is a regular file
+if [[ ! -f "$FMT" ]]; then
+    echo "$0: fmt is not a regular file: $FMT" 1>&2
+    exit 4
+fi
+# check that fmt is executable
+if [[ ! -x "$FMT" ]]; then
+    echo "$0: fmt is not executable $FMT" 1>&2
+    exit 4
+fi
+
+
+# check that awk is a regular executable file
+#
+
+# we have to reconstruct the path to awk in case -a was not used
+if [[ -z "$A_FLAG" ]]; then
+    AWK="$(type -P "$AWK")"
+fi
+# now that we have a possible new path, check that awk exists
+if [[ ! -e "$AWK" ]]; then
+    echo "$0: awk does not exist: $AWK" 1>&2
+    exit 5
+fi
+# check that awk is a regular file
+if [[ ! -f "$AWK" ]]; then
+    echo "$0: awk is not a regular file: $AWK" 1>&2
+    exit 5
+fi
+# check that awk is executable
+if [[ ! -x "$AWK" ]]; then
+    echo "$0: awk is not executable $AWK" 1>&2
+    exit 5
+fi
+
 
 # debug non-fmt options
 #
