@@ -2,7 +2,7 @@
 #
 # pfmt - paragraph formatting
 #
-# Copyright (c) 2023 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -22,45 +22,81 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 #
-# chongo (Landon Curt Noll, http://www.isthe.com/chongo/index.html) /\oo/\
+# chongo (Landon Curt Noll) /\oo/\
 #
-# Share and enjoy! :-)
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
+#
+# Share and enjoy!  :-)
 
 
-SHELL= bash
+#############
+# utilities #
+#############
 
 CC= cc
-RM= rm
-CP= cp
 CHMOD= chmod
+CP= cp
+ID= id
 INSTALL= install
-TRUE= true
-SH_FILES= pfmt.sh
+RM= rm
+SHELL= bash
 
-DESTDIR= /usr/local/bin
 
+######################
+# target information #
+######################
+
+# V=@:  do not echo debug statements (quiet mode)
+# V=@   echo debug statements (debug / verbose mode)
+#
+V=@:
+#V=@
+
+PREFIX= /usr/local
+DESTDIR= ${PREFIX}/bin
 
 TARGETS= pfmt
 
-all: ${TARGETS}
-	@:
 
-# rules, not file targets
-#
+######################################
+# all - default rule - must be first #
+######################################
+
+all: ${TARGETS}
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
+
+XXX:
+	@echo rule to build XXX or remove rule if target file just exists
+
+
+#################################################
+# .PHONY list of rules that do not create files #
+#################################################
+
 .PHONY: all configure clean clobber install
 
-pfmt: pfmt.sh
-	@${CP} -fv $< $@
-	${CHMOD} +x $@
+
+###################################
+# standard Makefile utility rules #
+###################################
 
 configure:
-	@echo nothing to configure
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 clean:
-	${RM} -f ${TARGETS}
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 clobber: clean
-	@${TRUE}
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 install: all
+	${V} echo DEBUG =-= $@ start =-=
+	@if [[ $$(${ID} -u) != 0 ]]; then echo "ERROR: must be root to make $@" 1>&2; exit 2; fi
+	${INSTALL} -d -m 0755 ${DESTDIR}
 	${INSTALL} -m 0555 ${TARGETS} ${DESTDIR}
+	${V} echo DEBUG =-= $@ end =-=
