@@ -12,7 +12,7 @@ sudo make install
 
 # To use
 
-```sh
+```
 /usr/local/bin/pfmt [-h] [-v level] [-V]
 	[-f path]  [-1 first] [-e endstr] [-i istr]
 	[-c] [-m] [-n] [-p] [-d chars] [-l num] [-t num] [-w width] [-a awk]
