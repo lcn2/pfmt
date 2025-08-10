@@ -252,7 +252,7 @@ if [[ -n $D_FLAG ]]; then
     if [[ $V_FLAG -ge 5 ]]; then
 	echo "$0: debug[5]: set -d $D_FLAG" 1>&2
     fi
-    F_OPTION+=("-p")
+    F_OPTION+=("-d")
 fi
 if [[ -n $L_FLAG ]]; then
     if [[ $V_FLAG -ge 5 ]]; then
